@@ -15,3 +15,12 @@ gem "jquery-rails"
 
 # To use debugger
 # gem 'debugger'
+#
+
+gem "json"
+
+group :test, :development do
+  gem "rspec",       "~> 2.10.0"
+  gem "rspec-rails", "~> 2.10.1"
+  gem "ci_reporter", "~> 1.7.0"
+end
