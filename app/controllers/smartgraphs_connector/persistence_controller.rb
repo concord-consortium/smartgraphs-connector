@@ -11,7 +11,14 @@ module SmartgraphsConnector
     end
 
     def update
-      render :nothing => true
+      body = request.body.read
+      persistence = Persistence.find_or_create_by_learner_id(params[:learner_id].to_i)
+      persistence.content = body
+      if persistence.save
+        render :nothing => true
+      else
+        raise ActionController::RoutingError.new('Not Found')
+      end
     end
   end
 end
