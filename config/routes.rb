@@ -1,4 +1,4 @@
 SmartgraphsConnector::Engine.routes.draw do
-  get '/persistence/:learner_id' => 'persistence#show'
-  post '/persistence/:learner_id' => 'persistence#update'
+  get '/persistence/:learner_id' => 'persistence#show', :constraints => {:learner_id => /\d+/}
+  post '/persistence/:learner_id' => 'persistence#update', :constraints => {:learner_id => /\d+/}
 end
