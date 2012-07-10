@@ -7,12 +7,24 @@ describe SmartgraphsConnector::PersistenceController do
   end
 
   describe "routing" do
+    it "recognizes and generates #check" do
+      {:get => "persistence" }.should route_to(:controller => 'smartgraphs_connector/persistence', :action => 'check')
+    end
+
     it "recognizes and generates #show" do
       {:get => "persistence/25" }.should route_to(:controller => 'smartgraphs_connector/persistence', :action => 'show', :learner_id => '25')
     end
 
     it "recognizes and generates #update" do
       {:post => "persistence/25" }.should route_to(:controller => 'smartgraphs_connector/persistence', :action => 'update', :learner_id => '25')
+    end
+  end
+
+  describe "check" do
+    it 'should render a blank response for check' do
+      get :check
+      response.code.should == "200"
+      response.body.strip.should be_empty
     end
   end
 

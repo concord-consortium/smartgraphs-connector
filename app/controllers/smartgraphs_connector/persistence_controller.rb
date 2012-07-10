@@ -2,6 +2,10 @@ require_dependency "smartgraphs_connector/application_controller"
 
 module SmartgraphsConnector
   class PersistenceController < ApplicationController
+    def check
+      head :ok
+    end
+
     def show
       if (persistence = Persistence.find_by_learner_id(params[:learner_id].to_i)) && persistence.content
         render :json => persistence.content
