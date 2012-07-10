@@ -10,7 +10,7 @@ module SmartgraphsConnector
       if (persistence = Persistence.find_by_learner_id(params[:learner_id].to_i)) && persistence.content
         render :json => persistence.content
       else
-        render :json => {}
+        raise ActionController::RoutingError.new('Not Found')
       end
     end
 
@@ -19,7 +19,7 @@ module SmartgraphsConnector
       persistence = Persistence.find_or_create_by_learner_id(params[:learner_id].to_i)
       persistence.content = body
       if persistence.save
-        render :nothing => true
+        head :ok
       else
         raise ActionController::RoutingError.new('Not Found')
       end

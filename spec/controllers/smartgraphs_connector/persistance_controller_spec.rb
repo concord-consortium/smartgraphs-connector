@@ -37,9 +37,11 @@ describe SmartgraphsConnector::PersistenceController do
       end
     end
 
-    it 'should render an empty json when persistence does not yet exist' do
-      get :show, :learner_id => 34
-      response.body.should == "{}"
+    it 'should render a 404 when persistence does not yet exist' do
+      begin
+        get :show, :learner_id => 34
+      rescue ActionController::RoutingError
+      end
     end
 
     it 'should render the persistence content when it exists' do
