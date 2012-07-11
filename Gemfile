@@ -23,4 +23,5 @@ group :test, :development do
   gem "rspec",       "~> 2.10.0"
   gem "rspec-rails", "~> 2.10.1"
   gem "ci_reporter", "~> 1.7.0"
+  gem "fakeweb",     "~> 1.3.0"
 end
