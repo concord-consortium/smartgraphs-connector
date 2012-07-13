@@ -29,6 +29,7 @@ describe SmartgraphsConnector::Portal do
           mc.choices[1].choice.should == "Red"
           mc.choices[2].choice.should == "Purple"
           mc.choices[3].choice.should == "Fuchsia"
+          mc.choices[0].is_correct.should be_true
         when 1
           page.page_elements.size.should == 1
           open_response = page.page_elements.first.embeddable

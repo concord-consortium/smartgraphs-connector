@@ -63,7 +63,7 @@ module SmartgraphsConnector
             mc = Embeddable::MultipleChoice.create(:prompt => sequence.initialPrompt)
             correct_index = (sequence.correctAnswerIndex || -1).to_i
             sequence.choices.each_with_index do |choice, i|
-              c = mc.choices.create!(:choice => choice, :is_correct => (i == sequence.correct_index))
+              c = mc.choices.create!(:choice => choice, :is_correct => (i == correct_index))
             end
             portal_page.add_embeddable(mc)
             portal_page.save
