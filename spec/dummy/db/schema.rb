@@ -11,7 +11,78 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120706184447) do
+ActiveRecord::Schema.define(:version => 20120712203647) do
+
+  create_table "activities", :force => true do |t|
+    t.string   "name"
+    t.string   "publication_status"
+    t.integer  "user_id"
+    t.datetime "created_at",         :null => false
+    t.datetime "updated_at",         :null => false
+  end
+
+  create_table "embeddable_multiple_choice_choices", :force => true do |t|
+    t.integer  "multiple_choice_id"
+    t.text     "choice"
+    t.boolean  "is_correct"
+    t.datetime "created_at",         :null => false
+    t.datetime "updated_at",         :null => false
+  end
+
+  create_table "embeddable_multiple_choices", :force => true do |t|
+    t.string   "name"
+    t.text     "prompt"
+    t.integer  "user_id"
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
+  end
+
+  create_table "embeddable_open_responses", :force => true do |t|
+    t.integer  "user_id"
+    t.string   "name"
+    t.text     "prompt"
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
+  end
+
+  create_table "external_activities", :force => true do |t|
+    t.integer  "template_id"
+    t.string   "template_type"
+    t.string   "name"
+    t.integer  "user_id"
+    t.text     "url"
+    t.boolean  "append_learner_id_to_url"
+    t.boolean  "popup"
+    t.string   "publication_status"
+    t.datetime "created_at",               :null => false
+    t.datetime "updated_at",               :null => false
+  end
+
+  create_table "page_elements", :force => true do |t|
+    t.integer  "page_id"
+    t.integer  "embeddable_id"
+    t.string   "embeddable_type"
+    t.integer  "position"
+    t.integer  "user_id"
+    t.datetime "created_at",      :null => false
+    t.datetime "updated_at",      :null => false
+  end
+
+  create_table "pages", :force => true do |t|
+    t.integer  "section_id"
+    t.string   "name"
+    t.integer  "user_id"
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
+  end
+
+  create_table "sections", :force => true do |t|
+    t.integer  "activity_id"
+    t.string   "name"
+    t.integer  "user_id"
+    t.datetime "created_at",  :null => false
+    t.datetime "updated_at",  :null => false
+  end
 
   create_table "smartgraphs_connector_persistences", :force => true do |t|
     t.integer  "learner_id"

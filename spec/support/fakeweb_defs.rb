@@ -10,7 +10,8 @@ FakeWeb.register_uri(:get, SmartgraphsConnector::AUTHORING_URL + "/activities.js
 JSON
 FakeWeb.register_uri(:get, SmartgraphsConnector::AUTHORING_URL + "/activities/34.json", :status => ["404", "Not Found"])
 
-FakeWeb.register_uri(:get, SmartgraphsConnector::AUTHORING_URL + "/activities/2.json", :body => <<JSON)
+def set_original_activity
+  FakeWeb.register_uri(:get, SmartgraphsConnector::AUTHORING_URL + "/activities/2.json", :body => <<JSON)
 {
   "type": "Activity",
   "name": "Second Test Activity",
@@ -119,3 +120,118 @@ FakeWeb.register_uri(:get, SmartgraphsConnector::AUTHORING_URL + "/activities/2.
   ]
 }
 JSON
+end
+
+def set_updated_activity
+  FakeWeb.register_uri(:get, SmartgraphsConnector::AUTHORING_URL + "/activities/2.json", :body => <<JSON)
+{
+  "type": "Activity",
+  "name": "Second Test Activity with Updates",
+  "authorName": "Aaron Unger",
+  "pages": [
+    {
+      "type": "Page",
+      "name": "Multiple choice",
+      "text": "Page 1.",
+      "panes": [
+        {
+          "type": "ImagePane",
+          "name": "Arches National Park",
+          "url": "http://photos.ungerdesign.com/Professional/2012-Calendar/i-VsrWqxF/1/L/DSC03597-L.jpg",
+          "license": "All Rights Reserved.",
+          "attribution": "Aaron Unger"
+        }
+      ],
+      "sequence": {
+        "type": "MultipleChoiceWithSequentialHintsSequence",
+        "initialPrompt": "What color is the sea?",
+        "choices": [
+          "Green",
+          "Red",
+          "Black",
+          "Brown"
+        ],
+        "correctAnswerIndex": 3,
+        "giveUp": "The sea is black.",
+        "confirmCorrect": "Yep, black!",
+        "hints": [
+
+        ]
+      }
+    },
+    {
+      "type": "Page",
+      "name": "Numeric response",
+      "text": "This is page 2.",
+      "panes": [
+        {
+          "type": "ImagePane",
+          "name": "Arches National Park",
+          "url": "http://photos.ungerdesign.com/Professional/2012-Calendar/i-VsrWqxF/1/L/DSC03597-L.jpg",
+          "license": "All Rights Reserved.",
+          "attribution": "Aaron Unger"
+        }
+      ],
+      "sequence": {
+        "type": "NumericSequence",
+        "initialPrompt": {
+          "text": "What hour is noon?"
+        },
+        "correctAnswer": 12.0,
+        "tolerance": 0.01,
+        "giveUp": {
+          "text": "It was 12."
+        },
+        "confirmCorrect": {
+          "text": "Good job!"
+        },
+        "hints": [
+          {
+            "name": "Numbers",
+            "text": "What's the largest number on a clock?"
+          }
+        ]
+      }
+    },
+    {
+      "type": "Page",
+      "name": "Open Response",
+      "text": "This is an open response.",
+      "panes": [
+        {
+          "type": "ImagePane",
+          "name": "Arches National Park",
+          "url": "http://photos.ungerdesign.com/Professional/2012-Calendar/i-VsrWqxF/1/L/DSC03597-L.jpg",
+          "license": "All Rights Reserved.",
+          "attribution": "Aaron Unger"
+        }
+      ],
+      "sequence": {
+        "type": "ConstructedResponseSequence",
+        "initialPrompt": "What's at the bottom of the sea?",
+        "initialContent": "The bottom has..."
+      }
+    },
+    {
+      "type": "Page",
+      "name": "Conclusion",
+      "text": "That's all.",
+      "panes": [
+        {
+          "type": "ImagePane",
+          "name": "Arches National Park",
+          "url": "http://photos.ungerdesign.com/Professional/2012-Calendar/i-VsrWqxF/1/L/DSC03597-L.jpg",
+          "license": "All Rights Reserved.",
+          "attribution": "Aaron Unger"
+        }
+      ]
+    }
+  ],
+  "units": [
+
+  ]
+}
+JSON
+end
+
+set_original_activity
