@@ -14,5 +14,13 @@ describe SmartgraphsConnector::Authoring do
     act.pages.size.should == 4
   end
 
+  it 'should return nil for a non-existent activity' do
+    act = SmartgraphsConnector::Authoring.activity(34)
+    act.should be_nil
+  end
+
+  it 'should insert the activity id into the returned activity' do
+    act = SmartgraphsConnector::Authoring.activity(2)
+    act.id.should == 2
   end
 end

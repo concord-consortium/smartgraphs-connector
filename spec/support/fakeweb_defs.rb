@@ -8,6 +8,7 @@ FakeWeb.register_uri(:get, SmartgraphsConnector::AUTHORING_URL + "/activities.js
   {"activity":{"author_name":"Aaron Unger","created_at":"2012-07-12T20:30:31Z","id":3,"name":"three","owner_id":1,"updated_at":"2012-07-12T20:30:31Z"}}
 ]
 JSON
+FakeWeb.register_uri(:get, SmartgraphsConnector::AUTHORING_URL + "/activities/34.json", :status => ["404", "Not Found"])
 
 FakeWeb.register_uri(:get, SmartgraphsConnector::AUTHORING_URL + "/activities/2.json", :body => <<JSON)
 {
