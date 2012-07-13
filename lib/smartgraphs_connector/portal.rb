@@ -4,7 +4,6 @@ module SmartgraphsConnector
   SG_RUNTIME = "http://smartgraphs.concord.org/"
   class Portal
     def self.publish_activity(activity)
-      # todo
       portal_activity = Activity.find_by_name(activity_name(activity))
       if portal_activity
         portal_activity = update_activity(activity, portal_activity)
@@ -36,9 +35,11 @@ module SmartgraphsConnector
       new_portal_activity = create_activity(activity)
       portal_activity.name = ("Outdated " + portal_activity.name)
       portal_activity.save
-      old_external = portal_activity.external_activity
-      old_external.publication_status = 'private'
-      old_external.save
+      old_externals = portal_activity.external_activities
+      old_externals.each do |old_external|
+        old_external.publication_status = 'private'
+        old_external.save
+      end
       new_portal_activity
     end
 

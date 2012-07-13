@@ -43,7 +43,7 @@ describe SmartgraphsConnector::Portal do
           page.page_elements.size.should == 0
         end
       end
-      act.external_activity.should_not be_nil
+      act.external_activities.size.should == 1
     end
 
     it 'should update an existing activity based on the activity definition from the authoring portal' do
@@ -91,7 +91,7 @@ describe SmartgraphsConnector::Portal do
           page.page_elements.size.should == 0
         end
       end
-      act.external_activity.should_not be_nil
+      act.external_activities.size.should == 1
     end
   end
 end
