@@ -1,0 +1,19 @@
+- if flash[:error]
+  .error
+    = flash[:error]
+- if flash[:notice]
+  .info
+    = flash[:notice]
+.activity
+  .attr
+    Name:
+    %span= @activity.name
+  .attr
+    ID:
+    %span= @activity.id
+  .attr
+    Author:
+    %span= @activity.authorName
+  .controls
+    = form_tag publish_activity_path(@activity.id) do
+      = submit_tag("Publish", :id => :publish)

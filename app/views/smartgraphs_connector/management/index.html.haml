@@ -1,0 +1,6 @@
+.activities
+  - @activities.each do |act|
+    .activity
+      %span= act.name
+      %span= act.author_name
+      %span= link_to 'Manage', manage_activity_path(act.id)
