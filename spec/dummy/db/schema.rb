@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120712203647) do
+ActiveRecord::Schema.define(:version => 20120713213401) do
 
   create_table "activities", :force => true do |t|
     t.string   "name"
@@ -74,6 +74,53 @@ ActiveRecord::Schema.define(:version => 20120712203647) do
     t.integer  "user_id"
     t.datetime "created_at", :null => false
     t.datetime "updated_at", :null => false
+  end
+
+  create_table "portal_learners", :force => true do |t|
+    t.integer  "offering_id"
+    t.datetime "created_at",  :null => false
+    t.datetime "updated_at",  :null => false
+  end
+
+  create_table "portal_offerings", :force => true do |t|
+    t.integer  "runnable_id"
+    t.string   "runnable_type"
+    t.datetime "created_at",    :null => false
+    t.datetime "updated_at",    :null => false
+  end
+
+  create_table "saveable_multiple_choice_answers", :force => true do |t|
+    t.integer  "multiple_choice_id"
+    t.integer  "choice_id"
+    t.integer  "position"
+    t.datetime "created_at",         :null => false
+    t.datetime "updated_at",         :null => false
+  end
+
+  create_table "saveable_multiple_choices", :force => true do |t|
+    t.integer  "learner_id"
+    t.integer  "offering_id"
+    t.integer  "multiple_choice_id"
+    t.integer  "response_count",     :default => 0
+    t.datetime "created_at",                        :null => false
+    t.datetime "updated_at",                        :null => false
+  end
+
+  create_table "saveable_open_response_answers", :force => true do |t|
+    t.integer  "open_response_id"
+    t.integer  "position"
+    t.text     "answer"
+    t.datetime "created_at",       :null => false
+    t.datetime "updated_at",       :null => false
+  end
+
+  create_table "saveable_open_responses", :force => true do |t|
+    t.integer  "learner_id"
+    t.integer  "offering_id"
+    t.integer  "open_response_id"
+    t.integer  "response_count",   :default => 0
+    t.datetime "created_at",                      :null => false
+    t.datetime "updated_at",                      :null => false
   end
 
   create_table "sections", :force => true do |t|

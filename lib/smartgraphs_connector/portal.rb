@@ -12,6 +12,26 @@ module SmartgraphsConnector
       end
 
       ensure_linked_external_activity(activity, portal_activity)
+      portal_activity
+    end
+
+    def self.save_answers(answers, portal_activity)
+      if answers.learner && answers.learner.url && answers.learner.url =~ /learner\/(\d+)/
+        learner = ::Portal::Learner.find($1.to_i)
+        portal_pages = portal_activity.sections.first.pages
+        answers.pages.each_with_index do |p,i|
+          portal_page = portal_pages[i]
+          pes = portal_page.page_elements
+          emb_idx = 0
+          p.steps.each do |s|
+            if s.responseTemplate
+              embeddable = pes[emb_idx].embeddable
+              emb_idx += 1
+              process_reportable(s, embeddable, learner)
+            end
+          end
+        end
+      end
     end
 
     private
@@ -72,6 +92,33 @@ module SmartgraphsConnector
         end
       end
       portal_activity
+    end
+
+    def self.process_reportable(answers, embeddable, learner)
+      answer = answers.responseTemplate["values"].first
+      case embeddable
+      when Embeddable::OpenResponse
+        process_open_response(embeddable, learner, answer)
+      when Embeddable::MultipleChoice
+        # smartgraphs answer indexes are 1-based, ruby uses 0-based arrays
+        choice = embeddable.choices[answer.to_i - 1]
+        process_multiple_choice(choice, learner)
+      end
+    end
+
+    def self.process_open_response(open_response, learner, answer)
+      saveable_open_response = ::Saveable::OpenResponse.find_or_create_by_learner_id_and_offering_id_and_open_response_id(learner.id, learner.offering.id, open_response.id)
+      if saveable_open_response.response_count == 0 || saveable_open_response.answers.last.answer != answer
+        saveable_open_response.answers.create(:answer => answer)
+      end
+    end
+
+    def self.process_multiple_choice(choice, learner)
+      multiple_choice = choice.multiple_choice
+      saveable = ::Saveable::MultipleChoice.find_or_create_by_learner_id_and_offering_id_and_multiple_choice_id(learner.id, learner.offering.id, multiple_choice.id)
+      if saveable.answers.empty? || saveable.answers.last.choice_id != choice.id
+        saveable.answers.create(:choice => choice)
+      end
     end
 
     def self.activity_name(activity)

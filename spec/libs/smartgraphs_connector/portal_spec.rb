@@ -9,7 +9,8 @@ describe SmartgraphsConnector::Portal do
     it 'should create a new activity based on the activity definition from the authoring portal' do
       act = SmartgraphsConnector::Authoring.activity(2)
       prev_size = Activity.count
-      SmartgraphsConnector::Portal.publish_activity(act)
+      p_act = SmartgraphsConnector::Portal.publish_activity(act)
+      p_act.should_not be_nil
       all_acts = Activity.all
       all_acts.size.should == (prev_size + 1)
       act = all_acts.last
@@ -55,7 +56,8 @@ describe SmartgraphsConnector::Portal do
 
       act = SmartgraphsConnector::Authoring.activity(2)
       prev_size = Activity.count
-      SmartgraphsConnector::Portal.publish_activity(act)
+      p_act = SmartgraphsConnector::Portal.publish_activity(act)
+      p_act.should_not be_nil
 
       all_acts = Activity.all
       # update still creates a new one. it just disables the old one.
@@ -93,6 +95,60 @@ describe SmartgraphsConnector::Portal do
         end
       end
       act.external_activities.size.should == 1
+    end
+  end
+
+  describe "save learner data" do
+    before :each do
+      act = SmartgraphsConnector::Authoring.activity(2)
+      @activity = SmartgraphsConnector::Portal.publish_activity(act)
+      offering = Portal::Offering.create!(:runnable => @activity)
+      @learner = Portal::Learner.create!(:offering => offering)
+
+      SmartgraphsConnector::Portal.save_answers(JSON.parse(LEARNER_DATA), @activity)
+    end
+
+    it 'should process learner data into Saveables' do
+      @learner.open_responses.size.should == 2
+      @learner.multiple_choices.size.should == 1
+      (@learner.open_responses + @learner.multiple_choices).each do |s|
+        s.answers.size.should == 1
+        case s
+        when Saveable::OpenResponse
+          s.open_response.should_not be_nil
+          if s.prompt == "Pick an integer between 3 and 7."
+            s.answer.should == "5.0"
+          else
+            s.answer.should == "This is some text."
+          end
+        when Saveable::MultipleChoice
+          s.multiple_choice.should_not be_nil
+          s.answer.should == "Red"
+          s.answered_correctly?.should be_false
+        end
+      end
+    end
+
+    it 'should update Saveables when saving new learner data for a user' do
+      SmartgraphsConnector::Portal.save_answers(JSON.parse(UPDATED_LEARNER_DATA), @activity)
+      @learner.open_responses.size.should == 2
+      @learner.multiple_choices.size.should == 1
+      (@learner.open_responses + @learner.multiple_choices).each do |s|
+        s.answers.size.should == 2
+        case s
+        when Saveable::OpenResponse
+          s.open_response.should_not be_nil
+          if s.prompt == "Pick an integer between 3 and 7."
+            s.answer.should == "7.0"
+          else
+            s.answer.should == "This is totally different text."
+          end
+        when Saveable::MultipleChoice
+          s.multiple_choice.should_not be_nil
+          s.answer.should == "Blue"
+          s.answered_correctly?.should be_true
+        end
+      end
     end
   end
 end
