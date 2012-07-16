@@ -1,7 +1,6 @@
 require 'digest/md5'
 require 'dot_notation_hash'
 module SmartgraphsConnector
-  SG_RUNTIME = "http://smartgraphs.concord.org/"
   class Portal
     def self.publish_activity(activity)
       portal_activity = Activity.find_by_name(activity_name(activity))
@@ -38,7 +37,7 @@ module SmartgraphsConnector
 
     def self.runtime_url(activity)
       ## FIXME
-      SG_RUNTIME + "something"
+      SmartgraphsConnector.smartgraphs_runtime_url + "something"
     end
 
     def self.ensure_linked_external_activity(activity, portal_activity)
@@ -126,7 +125,7 @@ module SmartgraphsConnector
     end
 
     def self.id_hash(activity)
-       Digest::MD5.hexdigest("#{SmartgraphsConnector::AUTHORING_URL}-#{activity.id}")
+       Digest::MD5.hexdigest("#{SmartgraphsConnector.authoring_url}-#{activity.id}")
     end
   end
 end

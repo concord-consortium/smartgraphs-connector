@@ -1,17 +1,15 @@
 require 'net/http'
 module SmartgraphsConnector
-  AUTHORING_URL="http://sg-authoring.local"
-
   class Authoring
     def self.activities
-      act_json = Net::HTTP.get(URI.parse(AUTHORING_URL + "/activities.json"))
+      act_json = Net::HTTP.get(URI.parse(SmartgraphsConnector.authoring_url + "/activities.json"))
       acts = JSON.parse(act_json)
       acts.map{|a| a["activity"] }
     end
 
     def self.activity(id)
       act = nil
-      res = Net::HTTP.get_response(URI.parse(AUTHORING_URL + "/activities/#{id}.json"))
+      res = Net::HTTP.get_response(URI.parse(SmartgraphsConnector.authoring_url + "/activities/#{id}.json"))
       if res.code == "200"
         act_json = res.body
         act = JSON.parse(act_json)
