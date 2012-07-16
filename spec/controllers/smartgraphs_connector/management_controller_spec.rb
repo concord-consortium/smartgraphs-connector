@@ -5,6 +5,22 @@ describe SmartgraphsConnector::ManagementController do
   before do
     # work around a bug in routing testing
     @routes = SmartgraphsConnector::Engine.routes
+    @user = User.new
+    @user.roles = ['admin']
+    controller.send "current_user=", @user
+  end
+
+  def set_non_admin
+    user = User.new
+    user.roles = ['manager', 'member', 'researcher']
+    controller.send "current_user=", user
+  end
+
+  def verify_redirect_home
+    response.code.should == "302"
+    response.should redirect_to(controller.main_app.home_url)
+    flash[:error].should be_nil
+    flash[:notice].should == "Please log in as an administrator"
   end
 
   describe "routing" do
@@ -27,6 +43,12 @@ describe SmartgraphsConnector::ManagementController do
       response.body.should match /\/activity\/1/
       response.body.should match /\/activity\/2/
       response.body.should match /\/activity\/3/
+    end
+
+    it 'should not render a list of activities when the current user is not an admin' do
+      set_non_admin
+      get :index
+      verify_redirect_home
     end
   end
 
@@ -54,10 +76,18 @@ describe SmartgraphsConnector::ManagementController do
       response.body.should match /<form.*?action="#{publish_activity_path(2)}"/
       response.body.should match /<input.*?value="Publish"/
     end
+
+    it 'should not render the activity when the current user is not an admin' do
+      set_non_admin
+
+      get :activity, :id => 2
+      verify_redirect_home
+    end
   end
 
   describe "publish" do
     before :each do
+      # ensure that the flash hash remains set
       @controller.instance_eval { flash.stub!(:sweep) }
     end
 
@@ -76,6 +106,13 @@ describe SmartgraphsConnector::ManagementController do
       response.should redirect_to(manage_activity_path(2))
       flash[:notice].should be_nil
       flash[:error].should == "Activity publish failed."
+    end
+
+    it 'should not publish if the current user is not an admin' do
+      set_non_admin
+
+      post :publish, :id => 2
+      verify_redirect_home
     end
   end
 end

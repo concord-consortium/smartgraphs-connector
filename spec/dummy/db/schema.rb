@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120713213401) do
+ActiveRecord::Schema.define(:version => 20120716172115) do
 
   create_table "activities", :force => true do |t|
     t.string   "name"
@@ -78,6 +78,7 @@ ActiveRecord::Schema.define(:version => 20120713213401) do
 
   create_table "portal_learners", :force => true do |t|
     t.integer  "offering_id"
+    t.integer  "student_id"
     t.datetime "created_at",  :null => false
     t.datetime "updated_at",  :null => false
   end
@@ -87,6 +88,12 @@ ActiveRecord::Schema.define(:version => 20120713213401) do
     t.string   "runnable_type"
     t.datetime "created_at",    :null => false
     t.datetime "updated_at",    :null => false
+  end
+
+  create_table "portal_students", :force => true do |t|
+    t.integer  "user_id"
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
   end
 
   create_table "saveable_multiple_choice_answers", :force => true do |t|
@@ -139,5 +146,10 @@ ActiveRecord::Schema.define(:version => 20120713213401) do
   end
 
   add_index "smartgraphs_connector_persistences", ["learner_id"], :name => "sg_connector_learner_idx"
+
+  create_table "users", :force => true do |t|
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
+  end
 
 end

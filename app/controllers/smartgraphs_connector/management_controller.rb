@@ -2,6 +2,8 @@ require_dependency "smartgraphs_connector/application_controller"
 
 module SmartgraphsConnector
   class ManagementController < ApplicationController
+    before_filter :admin_only
+
     def index
       # present a list of activities in the authoring portal which can be managed
       @activities = SmartgraphsConnector::Authoring.activities
