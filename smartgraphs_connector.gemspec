@@ -17,7 +17,15 @@ Gem::Specification.new do |s|
   s.test_files = Dir["test/**/*"]
 
   s.add_dependency "rails", "~> 3.2.6"
+
+  # make sure to match gem versions with the portal
+  s.add_dependency "haml", "~> 3.1.4"
+  s.add_dependency "json", "~> 1.6.3"
   # s.add_dependency "jquery-rails"
 
   s.add_development_dependency "sqlite3"
+  s.add_development_dependency "rspec",       "~> 2.10.0"
+  s.add_development_dependency "rspec-rails", "~> 2.10.1"
+  s.add_development_dependency "ci_reporter", "~> 1.7.0"
+  s.add_development_dependency "fakeweb",     "~> 1.3.0"
 end

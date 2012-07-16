@@ -17,14 +17,3 @@ gem "jquery-rails"
 # gem 'debugger'
 #
 
-
-# make sure to match gem versions with the portal
-gem "json", "~> 1.6.3"
-gem "haml", :git => "git://github.com/concord-consortium/haml.git", :branch => "xml-mime-type-and-ie8-keycode-fix"
-
-group :test, :development do
-  gem "rspec",       "~> 2.10.0"
-  gem "rspec-rails", "~> 2.10.1"
-  gem "ci_reporter", "~> 1.7.0"
-  gem "fakeweb",     "~> 1.3.0"
-end

@@ -1,3 +1,4 @@
+require 'haml'
 require "smartgraphs_connector/engine"
 require "smartgraphs_connector/authoring"
 require "smartgraphs_connector/portal"
