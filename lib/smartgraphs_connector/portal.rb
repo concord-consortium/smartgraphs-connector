@@ -20,11 +20,10 @@ module SmartgraphsConnector
         portal_pages = portal_activity.activities.first.sections.first.pages
         answers.pages.each_with_index do |p,i|
           portal_page = portal_pages[i]
-          pes = portal_page.page_elements
+          pes = portal_page.page_elements.map{|pe| pe.embeddable }
           emb_idx = 0
           p.steps.each do |s|
-            if s.responseTemplate
-              embeddable = pes[emb_idx].embeddable
+            if s.responseTemplate && (embeddable = pes[emb_idx])
               emb_idx += 1
               process_reportable(s, embeddable, learner)
             end
