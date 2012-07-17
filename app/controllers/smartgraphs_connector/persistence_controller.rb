@@ -20,8 +20,10 @@ module SmartgraphsConnector
 
     def update
       body = request.body.read
-      persistence = Persistence.find_or_create_by_learner_id(params[:learner_id].to_i)
+      persistence = Persistence.find_or_create_by_learner_id(@learner.id)
       persistence.content = body
+      template = @learner.offering.runnable.template
+      SmartgraphsConnector::Portal.save_answers(body, template.investigation) if template
       if persistence.save
         head :ok
       else

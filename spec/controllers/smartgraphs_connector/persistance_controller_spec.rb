@@ -121,6 +121,9 @@ describe SmartgraphsConnector::PersistenceController do
     it 'should create a Persistence object if none existed prior' do
       content = "{some: 'this is something', content: 'and this is something more'}"
       request.env['RAW_POST_DATA'] = content
+      SmartgraphsConnector::Portal.should_receive(:save_answers)
+      Portal::Learner.should_receive(:find).and_return(@learners[1])
+      @learners[1].should_receive(:offering).and_return({:runnable => {:template => {:investigation => true }}})
       post :update, :learner_id => @learners[1].id.to_s
       response.code.should == "200"
       p = SmartgraphsConnector::Persistence.find_by_learner_id(@learners[1].id)
@@ -133,6 +136,9 @@ describe SmartgraphsConnector::PersistenceController do
       new_content = "{some: 'this is something changed', content: 'and this is something more', and: 'finally some other stuff'}"
       p = SmartgraphsConnector::Persistence.create!({:learner_id => @learners[2].id, :content => content})
       request.env['RAW_POST_DATA'] = new_content
+      SmartgraphsConnector::Portal.should_receive(:save_answers)
+      Portal::Learner.should_receive(:find).and_return(@learners[2])
+      @learners[2].should_receive(:offering).and_return({:runnable => {:template => {:investigation => true }}})
       post :update, :learner_id => @learners[2].id.to_s
       response.code.should == "200"
       p.reload
