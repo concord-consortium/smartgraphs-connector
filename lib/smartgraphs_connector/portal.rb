@@ -37,12 +37,12 @@ module SmartgraphsConnector
 
     def self.runtime_url(activity)
       ## FIXME
-      SmartgraphsConnector.smartgraphs_runtime_url + "something"
+      SmartgraphsConnector.smartgraphs_runtime_url + "#something"
     end
 
     def self.ensure_linked_external_activity(activity, portal_activity, owner)
       ea = ExternalActivity.find_or_create_by_url(runtime_url(activity))
-      ea.template = portal_activity
+      ea.template = portal_activity.activities.first
       ea.name = activity.name
       ea.popup = true
       ea.append_learner_id_to_url = true
@@ -55,7 +55,7 @@ module SmartgraphsConnector
       new_portal_activity = create_activity(activity, owner)
       portal_activity.name = ("Outdated " + portal_activity.name)
       portal_activity.save
-      old_externals = portal_activity.external_activities
+      old_externals = portal_activity.activities.first.external_activities
       old_externals.each do |old_external|
         old_external.publication_status = 'private'
         old_external.save
@@ -65,7 +65,7 @@ module SmartgraphsConnector
 
     def self.create_activity(activity, owner)
       portal_inv = Investigation.create!(:name => activity_name(activity), :publication_status => "private", :user => owner)
-      portal_activity = portal_inv.activities.create!(:name => activity_name(activity), :user => owner)
+      portal_activity = portal_inv.activities.create!(:name => activity.name, :user => owner)
       portal_section = portal_activity.sections.create!(:name => activity.name, :user => owner)
       activity.pages.each do |page|
         portal_page = portal_section.pages.create!(:name => page.name, :user => owner)

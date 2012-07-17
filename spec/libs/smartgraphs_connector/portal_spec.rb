@@ -55,8 +55,9 @@ describe SmartgraphsConnector::Portal do
           page.page_elements.size.should == 0
         end
       end
-      inv.external_activities.size.should == 1
-      inv.external_activities.first.user.should == user
+      inv.external_activities.size.should == 0
+      act.external_activities.size.should == 1
+      act.external_activities.first.user.should == user
     end
 
     it 'should update an existing activity based on the activity definition from the authoring portal' do
@@ -116,8 +117,9 @@ describe SmartgraphsConnector::Portal do
           page.page_elements.size.should == 0
         end
       end
-      inv.external_activities.size.should == 1
-      inv.external_activities.first.user.should == user2
+      inv.external_activities.size.should == 0
+      act.external_activities.size.should == 1
+      act.external_activities.first.user.should == user2
     end
   end
 
