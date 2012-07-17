@@ -61,9 +61,10 @@ ActiveRecord::Schema.define(:version => 20120717180840) do
 
   create_table "investigations", :force => true do |t|
     t.string   "name"
+    t.string   "publication_status"
     t.integer  "user_id"
-    t.datetime "created_at", :null => false
-    t.datetime "updated_at", :null => false
+    t.datetime "created_at",         :null => false
+    t.datetime "updated_at",         :null => false
   end
 
   create_table "page_elements", :force => true do |t|
