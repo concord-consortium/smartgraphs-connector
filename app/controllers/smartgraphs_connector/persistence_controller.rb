@@ -23,7 +23,7 @@ module SmartgraphsConnector
       persistence = Persistence.find_or_create_by_learner_id(@learner.id)
       persistence.content = body
       template = @learner.offering.runnable.template
-      SmartgraphsConnector::Portal.save_answers(body, template.investigation) if template
+      SmartgraphsConnector::Portal.save_answers(JSON.parse(body), template.investigation) if template
       if persistence.save
         head :ok
       else
