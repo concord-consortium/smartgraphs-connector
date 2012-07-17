@@ -4,6 +4,7 @@ class CreateActivities < ActiveRecord::Migration
       t.string :name
       t.string :publication_status
       t.integer :user_id
+      t.integer :investigation_id
       t.timestamps
     end
   end

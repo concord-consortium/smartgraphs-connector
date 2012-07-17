@@ -12,9 +12,12 @@ describe SmartgraphsConnector::Portal do
       user = User.create!
       p_act = SmartgraphsConnector::Portal.publish_activity(act, user)
       p_act.should_not be_nil
-      all_acts = Activity.all
-      all_acts.size.should == (prev_size + 1)
-      act = all_acts.last
+      all_invs = Investigation.all
+      all_invs.size.should == (prev_size + 1)
+      inv = all_invs.last
+      inv.user.should == user
+      inv.activities.size.should == 1
+      act = inv.activities.last
       act.user.should == user
       act.sections.size.should == 1
       section = act.sections.last
@@ -52,8 +55,8 @@ describe SmartgraphsConnector::Portal do
           page.page_elements.size.should == 0
         end
       end
-      act.external_activities.size.should == 1
-      act.external_activities.first.user.should == user
+      inv.external_activities.size.should == 1
+      inv.external_activities.first.user.should == user
     end
 
     it 'should update an existing activity based on the activity definition from the authoring portal' do
@@ -69,12 +72,15 @@ describe SmartgraphsConnector::Portal do
       p_act = SmartgraphsConnector::Portal.publish_activity(act, user2)
       p_act.should_not be_nil
 
-      all_acts = Activity.all
+      all_invs = Investigation.all
       # update still creates a new one. it just disables the old one.
-      all_acts.size.should == (prev_size + 1)
-      act = all_acts.last
+      all_invs.size.should == (prev_size + 1)
+      inv = all_invs.last
+      inv.user.should == user2
+      all_invs.detect{|i| i.name == "Outdated " + inv.name}.should_not be_nil
+      inv.activities.size.should == 1
+      act = inv.activities.last
       act.user.should == user2
-      all_acts.detect{|a| a.name == "Outdated " + act.name}.should_not be_nil
       act.sections.size.should == 1
       section = act.sections.last
       section.name.should == "Second Test Activity with Updates"
@@ -110,8 +116,8 @@ describe SmartgraphsConnector::Portal do
           page.page_elements.size.should == 0
         end
       end
-      act.external_activities.size.should == 1
-      act.external_activities.first.user.should == user2
+      inv.external_activities.size.should == 1
+      inv.external_activities.first.user.should == user2
     end
   end
 

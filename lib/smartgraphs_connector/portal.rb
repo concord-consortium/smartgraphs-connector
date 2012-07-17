@@ -3,21 +3,21 @@ require 'dot_notation_hash'
 module SmartgraphsConnector
   class Portal
     def self.publish_activity(activity, owner)
-      portal_activity = Activity.find_by_name(activity_name(activity))
-      if portal_activity
-        portal_activity = update_activity(activity, portal_activity, owner)
+      portal_inv = Investigation.find_by_name(activity_name(activity))
+      if portal_inv
+        portal_inv = update_activity(activity, portal_inv, owner)
       else
-        portal_activity = create_activity(activity, owner)
+        portal_inv = create_activity(activity, owner)
       end
 
-      ensure_linked_external_activity(activity, portal_activity, owner)
-      portal_activity
+      ensure_linked_external_activity(activity, portal_inv, owner)
+      portal_inv
     end
 
     def self.save_answers(answers, portal_activity)
       if answers.learner && answers.learner.url && answers.learner.url =~ /learner\/(\d+)/
         learner = ::Portal::Learner.find($1.to_i)
-        portal_pages = portal_activity.sections.first.pages
+        portal_pages = portal_activity.activities.first.sections.first.pages
         answers.pages.each_with_index do |p,i|
           portal_page = portal_pages[i]
           pes = portal_page.page_elements
@@ -64,7 +64,8 @@ module SmartgraphsConnector
     end
 
     def self.create_activity(activity, owner)
-      portal_activity = Activity.create!(:name => activity_name(activity), :publication_status => "private", :user => owner)
+      portal_inv = Investigation.create!(:name => activity_name(activity), :publication_status => "private", :user => owner)
+      portal_activity = portal_inv.activities.create!(:name => activity_name(activity), :user => owner)
       portal_section = portal_activity.sections.create!(:name => activity.name, :user => owner)
       activity.pages.each do |page|
         portal_page = portal_section.pages.create!(:name => page.name, :user => owner)
@@ -91,7 +92,7 @@ module SmartgraphsConnector
           end
         end
       end
-      portal_activity
+      portal_inv
     end
 
     def self.process_reportable(answers, embeddable, learner)
