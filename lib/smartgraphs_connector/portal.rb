@@ -2,15 +2,15 @@ require 'digest/md5'
 require 'dot_notation_hash'
 module SmartgraphsConnector
   class Portal
-    def self.publish_activity(activity)
+    def self.publish_activity(activity, owner)
       portal_activity = Activity.find_by_name(activity_name(activity))
       if portal_activity
-        portal_activity = update_activity(activity, portal_activity)
+        portal_activity = update_activity(activity, portal_activity, owner)
       else
-        portal_activity = create_activity(activity)
+        portal_activity = create_activity(activity, owner)
       end
 
-      ensure_linked_external_activity(activity, portal_activity)
+      ensure_linked_external_activity(activity, portal_activity, owner)
       portal_activity
     end
 
@@ -40,18 +40,19 @@ module SmartgraphsConnector
       SmartgraphsConnector.smartgraphs_runtime_url + "something"
     end
 
-    def self.ensure_linked_external_activity(activity, portal_activity)
+    def self.ensure_linked_external_activity(activity, portal_activity, owner)
       ea = ExternalActivity.find_or_create_by_url(runtime_url(activity))
       ea.template = portal_activity
       ea.name = activity.name
       ea.popup = true
       ea.append_learner_id_to_url = true
+      ea.user = owner
       ea.save
       ea
     end
 
-    def self.update_activity(activity, portal_activity)
-      new_portal_activity = create_activity(activity)
+    def self.update_activity(activity, portal_activity, owner)
+      new_portal_activity = create_activity(activity, owner)
       portal_activity.name = ("Outdated " + portal_activity.name)
       portal_activity.save
       old_externals = portal_activity.external_activities
@@ -62,11 +63,11 @@ module SmartgraphsConnector
       new_portal_activity
     end
 
-    def self.create_activity(activity)
-      portal_activity = Activity.create!(:name => activity_name(activity), :publication_status => "private")
-      portal_section = portal_activity.sections.create!(:name => activity.name)
+    def self.create_activity(activity, owner)
+      portal_activity = Activity.create!(:name => activity_name(activity), :publication_status => "private", :user => owner)
+      portal_section = portal_activity.sections.create!(:name => activity.name, :user => owner)
       activity.pages.each do |page|
-        portal_page = portal_section.pages.create!(:name => page.name)
+        portal_page = portal_section.pages.create!(:name => page.name, :user => owner)
         # we only need to worry about things that are reportable
         sequence = page.sequence
         if sequence
@@ -76,10 +77,10 @@ module SmartgraphsConnector
             # numeric responses use a slightly different format for initialPrompt
             # instead of just a string, it's a hash: { text: "prompt" }
             prompt = prompt.is_a?(Hash) ? prompt.text : prompt
-            open_res = Embeddable::OpenResponse.create(:prompt => prompt)
+            open_res = Embeddable::OpenResponse.create(:prompt => prompt, :user => owner)
             portal_page.add_embeddable(open_res)
           when /^MultipleChoice/
-            mc = Embeddable::MultipleChoice.create(:prompt => sequence.initialPrompt)
+            mc = Embeddable::MultipleChoice.create(:prompt => sequence.initialPrompt, :user => owner)
             correct_index = (sequence.correctAnswerIndex || -1).to_i
             sequence.choices.each_with_index do |choice, i|
               c = mc.choices.create!(:choice => choice, :is_correct => (i == correct_index))

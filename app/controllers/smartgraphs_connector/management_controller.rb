@@ -20,7 +20,7 @@ module SmartgraphsConnector
     def publish
       @activity = SmartgraphsConnector::Authoring.activity(params[:id])
       begin
-        SmartgraphsConnector::Portal.publish_activity(@activity)
+        SmartgraphsConnector::Portal.publish_activity(@activity, current_user)
         flash[:notice] = "Activity was published."
       rescue => e
         flash[:error] = "Activity publish failed."
