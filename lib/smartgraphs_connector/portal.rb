@@ -37,7 +37,7 @@ module SmartgraphsConnector
 
     def self.runtime_url(activity)
       ## FIXME
-      SmartgraphsConnector.smartgraphs_runtime_url + "#something"
+      SmartgraphsConnector.smartgraphs_runtime_url + "#/#{activity.id}/#{activity.name.gsub(/[^a-zA-Z0-9]/,'')}"
     end
 
     def self.ensure_linked_external_activity(activity, portal_activity, owner)
